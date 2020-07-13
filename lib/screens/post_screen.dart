@@ -1,11 +1,41 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:cache_image/cache_image.dart';
 
 class PostScreen extends StatelessWidget {
-  PostScreen({@required this.title, @required this.content});
+  PostScreen({
+    @required this.time,
+    @required this.title,
+    @required this.content,
+    @required this.url,
+  }) {
+    getImage();
+  }
 
-  final String title, content;
+  String sourceImage;
+
+  final String url;
+  final String title, content, time;
   final String words = "Lorem ipsum dolor sit amet, conse...";
+
+  Future getImage() async {
+    if (url != '') {
+      http.Response response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        String dataDecode = response.body;
+        sourceImage = jsonDecode(dataDecode)['guid']['rendered'];
+
+        print(sourceImage);
+      } else {
+        print(response.statusCode);
+      }
+    } else {
+      print('tidak ada');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +51,7 @@ class PostScreen extends StatelessWidget {
                 margin: EdgeInsets.all(16),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(7),
-                  child: FadeInImage(
-                    fit: BoxFit.cover,
-                    placeholder: AssetImage('images/placeholder.png'),
-                    image: CacheImage(
-                        'https://youlead.id/wp-content/uploads/2019/10/KPK.jpg'),
-                  ),
+                  child: _showImage(sourceImage),
                 ),
               ),
             ),
@@ -46,7 +71,7 @@ class PostScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "7 Days - 6 Nights",
+                    "$time",
                     style: TextStyle(
                       color: Colors.blue,
                     ),
@@ -64,6 +89,24 @@ class PostScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+@override
+Widget _showImage(sourceImage) {
+  if (sourceImage != null) {
+    return FadeInImage(
+      fit: BoxFit.cover,
+      placeholder: AssetImage('images/placeholder.png'),
+      image:
+          CacheImage('https://youlead.id/wp-content/uploads/2019/10/KPK.jpg'),
+    );
+  } else {
+    return FadeInImage(
+      fit: BoxFit.cover,
+      placeholder: AssetImage('images/placeholder.png'),
+      image: AssetImage('images/notfound.jpg'),
     );
   }
 }

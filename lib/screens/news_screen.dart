@@ -1,4 +1,4 @@
-import 'package:html/parser.dart';
+import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:HolidayPackage/services/news.dart';
 import 'package:HolidayPackage/screens/post_screen.dart';
@@ -39,10 +39,28 @@ class _ContentPageState extends State<ContentPage> {
     data = await news.fetchData();
   }
 
+  String getTime(String dataTime) {
+    DateTime date = DateTime.parse(dataTime);
+    int differentDays = DateTime.now().difference(date).inDays;
+    var differentNight = differentDays >= 2 ? differentDays - 1 : 0;
+
+    return "$differentDays Days - $differentNight Nights";
+  }
+
   String getContent(String content) {
     RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 
     return content.replaceAll(exp, '');
+  }
+
+  String getUrl(int featuredMedia) {
+    // print(featuredMedia);
+
+    if (featuredMedia != 0) {
+      return "https://youlead.id/wp-json/wp/v2/media/$featuredMedia";
+    } else {
+      return '';
+    }
   }
 
   @override
@@ -64,6 +82,8 @@ class _ContentPageState extends State<ContentPage> {
                   children: <Widget>[
                     for (var item in data)
                       PostScreen(
+                        url: getUrl(item['featured_media']),
+                        time: getTime('${item['date_gmt']}'),
                         title: '${item["title"]["rendered"]}',
                         content: getContent('${item["excerpt"]["rendered"]}'),
                       ),
