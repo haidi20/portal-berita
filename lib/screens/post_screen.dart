@@ -10,7 +10,7 @@ class PostScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80,
+      // height: 80,
       color: Color(0xFFF6F9FD),
       child: Row(
         children: <Widget>[

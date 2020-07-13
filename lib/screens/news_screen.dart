@@ -38,8 +38,6 @@ class _ContentPageState extends State<ContentPage> {
   void getData() async {
     News news = News();
     data = await news.fetchData();
-
-    print(data[0]['id']);
   }
 
   @override
@@ -61,7 +59,7 @@ class _ContentPageState extends State<ContentPage> {
                   children: <Widget>[
                     for (var item in data)
                       PostScreen(
-                        title: '${item["id"]}',
+                        title: '${item["title"]["rendered"]}',
                       ),
                   ],
                 ),
