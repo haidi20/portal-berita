@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:HolidayPackage/services/news.dart';
+import 'package:HolidayPackage/screens/post_screen.dart';
+import 'package:HolidayPackage/screens/header_screen.dart';
 
 class HolidayScreen extends StatelessWidget {
   // This widget is the root of your application.
@@ -24,78 +29,46 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPageState extends State<ContentPage> {
+  _ContentPageState() {
+    getData();
+  }
+
+  List data;
+
+  void getData() async {
+    News news = News();
+    data = await news.fetchData();
+
+    print(data[0]['id']);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // agar ketika qwerty muncul.. page content tidak naik ke atas
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              HeaderPage(),
-              Expanded(
-                flex: 8,
-                child: Container(
-                  // color: Colors.grey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      for (var i = 0; i <= 5; i++)
-                        Container(
-                          color: Colors.grey,
-                          child: Text('content'),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class HeaderPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: 2,
-      child: Column(
-        children: <Widget>[
-          Container(
-            child: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            HeaderScreen(),
+            Expanded(
+              flex: 8,
               child: Container(
-                margin: EdgeInsets.all(20),
-                child: Text(
-                  "Search Holiday Package",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+                // color: Colors.grey,
+                child: ListView(
+                  scrollDirection: Axis.vertical,
+                  children: <Widget>[
+                    for (var item in data)
+                      PostScreen(
+                        title: '${item["id"]}',
+                      ),
+                  ],
                 ),
               ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 30, right: 30),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color(0xFFE5E8EC),
-              boxShadow: [
-                BoxShadow(color: Color(0xFFF6F9FD), spreadRadius: 3),
-              ],
-            ),
-            child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Search...',
-                prefixIcon: Icon(Icons.search),
-                border: InputBorder.none,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
