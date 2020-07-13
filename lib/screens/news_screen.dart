@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:html/parser.dart';
 import 'package:flutter/material.dart';
 import 'package:HolidayPackage/services/news.dart';
 import 'package:HolidayPackage/screens/post_screen.dart';
@@ -40,6 +39,12 @@ class _ContentPageState extends State<ContentPage> {
     data = await news.fetchData();
   }
 
+  String getContent(String content) {
+    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+
+    return content.replaceAll(exp, '');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,6 +65,7 @@ class _ContentPageState extends State<ContentPage> {
                     for (var item in data)
                       PostScreen(
                         title: '${item["title"]["rendered"]}',
+                        content: getContent('${item["excerpt"]["rendered"]}'),
                       ),
                   ],
                 ),

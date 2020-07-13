@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cache_image/cache_image.dart';
 
 class PostScreen extends StatelessWidget {
-  PostScreen({@required this.title});
+  PostScreen({@required this.title, @required this.content});
 
-  final String title;
+  final String title, content;
   final String words = "Lorem ipsum dolor sit amet, conse...";
 
   @override
@@ -52,7 +52,8 @@ class PostScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "$words",
+                    "$content",
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Color(0xFF94979B),
                     ),
