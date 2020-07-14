@@ -14,4 +14,20 @@ class News {
       print(response.statusCode);
     }
   }
+
+  Future<String> fetchImage(url) async {
+    if (url != '') {
+      http.Response response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        String dataDecode = response.body;
+
+        return jsonDecode(dataDecode)['guid']['rendered'];
+      } else {
+        print(response.statusCode);
+      }
+    } else {
+      // print('tidak ada');
+    }
+  }
 }

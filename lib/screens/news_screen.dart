@@ -1,10 +1,11 @@
 import 'dart:core';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:HolidayPackage/services/news.dart';
-import 'package:HolidayPackage/screens/post_screen.dart';
+// import 'package:HolidayPackage/screens/post_screen.dart';
 import 'package:HolidayPackage/screens/header_screen.dart';
 
-class HolidayScreen extends StatelessWidget {
+class NewsScreen extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -28,15 +29,15 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPageState extends State<ContentPage> {
-  _ContentPageState() {
-    getData();
-  }
+  StreamController _dataController;
+  News news = News();
 
-  List data;
+  getData() async {
+    news.fetchData().then((res) async {
+      _dataController.add(res);
 
-  void getData() async {
-    News news = News();
-    data = await news.fetchData();
+      return res;
+    });
   }
 
   String getTime(String dataTime) {
@@ -53,14 +54,11 @@ class _ContentPageState extends State<ContentPage> {
     return content.replaceAll(exp, '');
   }
 
-  String getUrl(int featuredMedia) {
-    // print(featuredMedia);
-
-    if (featuredMedia != 0) {
-      return "https://youlead.id/wp-json/wp/v2/media/$featuredMedia";
-    } else {
-      return '';
-    }
+  @override
+  void initState() {
+    _dataController = new StreamController();
+    getData();
+    super.initState();
   }
 
   @override
@@ -77,17 +75,29 @@ class _ContentPageState extends State<ContentPage> {
               flex: 8,
               child: Container(
                 // color: Colors.grey,
-                child: ListView(
-                  scrollDirection: Axis.vertical,
-                  children: <Widget>[
-                    for (var item in data)
-                      PostScreen(
-                        url: getUrl(item['featured_media']),
-                        time: getTime('${item['date_gmt']}'),
-                        title: '${item["title"]["rendered"]}',
-                        content: getContent('${item["excerpt"]["rendered"]}'),
-                      ),
-                  ],
+                child: StreamBuilder(
+                  stream: _dataController.stream,
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    print('Has error: ${snapshot.hasError}');
+                    print('Has data: ${snapshot.hasData}');
+
+                    if (snapshot.hasError) {
+                      return Text(snapshot.error);
+                    }
+
+                    if (snapshot.hasData) {
+                      return ListView(
+                        scrollDirection: Axis.vertical,
+                        children: <Widget>[
+                          for (var item in snapshot.data) Text('${item['id']}'),
+                        ],
+                      );
+                    }
+
+                    if (!snapshot.hasData) {
+                      return Text('No Posts');
+                    }
+                  },
                 ),
               ),
             ),
@@ -97,3 +107,10 @@ class _ContentPageState extends State<ContentPage> {
     );
   }
 }
+
+// ListView(
+//                   scrollDirection: Axis.vertical,
+//                   children: <Widget>[
+//                     for (var item in data) Text('${item['id']}'),
+//                   ],
+//                 ),
