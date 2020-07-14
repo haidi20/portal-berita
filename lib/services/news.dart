@@ -15,8 +15,8 @@ class News {
     }
   }
 
-  Future<String> fetchImage(url) async {
-    if (url != '') {
+  Future fetchImage(url) async {
+    if (url != null) {
       http.Response response = await http.get(url);
 
       if (response.statusCode == 200) {
@@ -27,7 +27,7 @@ class News {
         print(response.statusCode);
       }
     } else {
-      // print('tidak ada');
+      return null;
     }
   }
 }

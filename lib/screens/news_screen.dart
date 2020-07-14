@@ -2,7 +2,7 @@ import 'dart:core';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:HolidayPackage/services/news.dart';
-// import 'package:HolidayPackage/screens/post_screen.dart';
+import 'package:HolidayPackage/screens/post_screen.dart';
 import 'package:HolidayPackage/screens/header_screen.dart';
 
 class NewsScreen extends StatelessWidget {
@@ -29,8 +29,8 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPageState extends State<ContentPage> {
-  StreamController _dataController;
   News news = News();
+  StreamController _dataController;
 
   getData() async {
     news.fetchData().then((res) async {
@@ -52,6 +52,14 @@ class _ContentPageState extends State<ContentPage> {
     RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 
     return content.replaceAll(exp, '');
+  }
+
+  String getUrl(int featured_media) {
+    if (featured_media != 0) {
+      return 'https://youlead.id/wp-json/wp/v2/media/$featured_media';
+    } else {
+      return null;
+    }
   }
 
   @override
@@ -78,24 +86,45 @@ class _ContentPageState extends State<ContentPage> {
                 child: StreamBuilder(
                   stream: _dataController.stream,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    print('Has error: ${snapshot.hasError}');
-                    print('Has data: ${snapshot.hasData}');
+                    // print('Has error: ${snapshot.hasError}');
+                    // print('Has data: ${snapshot.hasData}');
 
                     if (snapshot.hasError) {
                       return Text(snapshot.error);
                     }
 
                     if (snapshot.hasData) {
-                      return ListView(
+                      return ListView.builder(
                         scrollDirection: Axis.vertical,
-                        children: <Widget>[
-                          for (var item in snapshot.data) Text('${item['id']}'),
-                        ],
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, i) {
+                          // for (var item in snapshot.data)
+                          return ListTile(
+                            title: PostScreen(
+                              url: getUrl(snapshot.data[i]['featured_media']),
+                              time: getTime('${snapshot.data[i]['date_gmt']}'),
+                              title: '${snapshot.data[i]["title"]["rendered"]}',
+                              content: getContent(
+                                  '${snapshot.data[i]["excerpt"]["rendered"]}'),
+                            ),
+                          );
+                        },
                       );
                     }
 
                     if (!snapshot.hasData) {
-                      return Text('No Posts');
+                      return ListView(
+                        scrollDirection: Axis.vertical,
+                        children: <Widget>[
+                          for (var i = 0; i < 10; i++)
+                            PostScreen(
+                              url: '',
+                              time: '',
+                              title: '',
+                              content: '',
+                            ),
+                        ],
+                      );
                     }
                   },
                 ),
@@ -107,10 +136,3 @@ class _ContentPageState extends State<ContentPage> {
     );
   }
 }
-
-// ListView(
-//                   scrollDirection: Axis.vertical,
-//                   children: <Widget>[
-//                     for (var item in data) Text('${item['id']}'),
-//                   ],
-//                 ),

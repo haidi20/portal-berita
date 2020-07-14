@@ -1,20 +1,30 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cache_image/cache_image.dart';
+import 'package:HolidayPackage/services/news.dart';
 
 class PostScreen extends StatelessWidget {
   PostScreen({
+    @required this.url,
     @required this.time,
     @required this.title,
     @required this.content,
-    // @required this.url,
   }) {
-    // print(url);
+    _dataController = new StreamController();
+    getImage();
   }
 
-  // String sourceImage;
+  News news = News();
+  StreamController _dataController;
+  final String title, content, time, url;
 
-  // final String url;
-  final String title, content, time;
+  void getImage() {
+    news.fetchImage(url).then((res) async {
+      _dataController.add(res);
+
+      return res;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +40,7 @@ class PostScreen extends StatelessWidget {
                 margin: EdgeInsets.all(16),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(7),
-                  child: FadeInImage(
-                    fit: BoxFit.cover,
-                    placeholder: AssetImage('images/placeholder.png'),
-                    image: AssetImage('images/notfound.jpg'),
-                  ),
+                  child: _showImage(_dataController),
                 ),
               ),
             ),
@@ -76,29 +82,30 @@ class PostScreen extends StatelessWidget {
   }
 }
 
-// @override
-// Widget _showImage() {
-//   return FadeInImage(
-//     fit: BoxFit.cover,
-//     placeholder: AssetImage('images/placeholder.png'),
-//     image: AssetImage('images/notfound.jpg'),
-//   );
+@override
+Widget _showImage(_dataController) {
+  return StreamBuilder(
+    stream: _dataController.stream,
+    builder: (BuildContext context, AsyncSnapshot snapshot) {
+      if (snapshot.hasError) {
+        return Text(snapshot.error);
+      }
 
-//   if (sourceImage != null) {
-//     print("ada");
+      if (snapshot.hasData) {
+        return FadeInImage(
+          fit: BoxFit.cover,
+          placeholder: AssetImage('images/placeholder.png'),
+          image: CacheImage('${snapshot.data}'),
+        );
+      }
 
-//     return FadeInImage(
-//       fit: BoxFit.cover,
-//       placeholder: AssetImage('images/placeholder.png'),
-//       image:
-//           CacheImage('https://youlead.id/wp-content/uploads/2019/10/KPK.jpg'),
-//     );
-//   } else {
-//     print('TIDAK');
-//     return FadeInImage(
-//       fit: BoxFit.cover,
-//       placeholder: AssetImage('images/placeholder.png'),
-//       image: AssetImage('images/notfound.jpg'),
-//     );
-//   }
-// }
+      if (!snapshot.hasData) {
+        return FadeInImage(
+          fit: BoxFit.cover,
+          placeholder: AssetImage('images/placeholder.png'),
+          image: AssetImage('images/notfound.jpg'),
+        );
+      }
+    },
+  );
+}
