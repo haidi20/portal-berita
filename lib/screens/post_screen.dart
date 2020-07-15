@@ -1,29 +1,20 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cache_image/cache_image.dart';
-import 'package:HolidayPackage/services/news.dart';
 
 class PostScreen extends StatelessWidget {
   PostScreen({
     @required this.url,
-    @required this.time,
+    // @required this.time,
     @required this.title,
     @required this.content,
   }) {
-    _dataController = new StreamController();
     getImage();
   }
 
-  News news = News();
-  StreamController _dataController;
-  final String title, content, time, url;
+  final String title, content, url;
 
   void getImage() {
-    news.fetchImage(url).then((res) async {
-      _dataController.add(res);
-
-      return res;
-    });
+    print(url);
   }
 
   @override
@@ -40,7 +31,7 @@ class PostScreen extends StatelessWidget {
                 margin: EdgeInsets.all(16),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(7),
-                  child: _showImage(_dataController),
+                  child: _showImage(url),
                 ),
               ),
             ),
@@ -60,7 +51,7 @@ class PostScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "$time",
+                    "time",
                     style: TextStyle(
                       color: Colors.blue,
                     ),
@@ -83,29 +74,45 @@ class PostScreen extends StatelessWidget {
 }
 
 @override
-Widget _showImage(_dataController) {
-  return StreamBuilder(
-    stream: _dataController.stream,
-    builder: (BuildContext context, AsyncSnapshot snapshot) {
-      if (snapshot.hasError) {
-        return Text(snapshot.error);
-      }
+Widget _showImage(url) {
+  if (url == 'false') {
+    print(url);
+    return FadeInImage(
+      fit: BoxFit.cover,
+      placeholder: AssetImage('images/placeholder.png'),
+      image: AssetImage('images/notfound.jpg'),
+    );
+  } else {
+    print(url);
+    return FadeInImage(
+      fit: BoxFit.cover,
+      placeholder: AssetImage('images/placeholder.png'),
+      image: CacheImage('$url'),
+    );
+  }
 
-      if (snapshot.hasData) {
-        return FadeInImage(
-          fit: BoxFit.cover,
-          placeholder: AssetImage('images/placeholder.png'),
-          image: CacheImage('${snapshot.data}'),
-        );
-      }
+  // return StreamBuilder(
+  //   stream: _dataController.stream,
+  //   builder: (BuildContext context, AsyncSnapshot snapshot) {
+  //     if (snapshot.hasError) {
+  //       return Text(snapshot.error);
+  //     }
 
-      if (!snapshot.hasData) {
-        return FadeInImage(
-          fit: BoxFit.cover,
-          placeholder: AssetImage('images/placeholder.png'),
-          image: AssetImage('images/notfound.jpg'),
-        );
-      }
-    },
-  );
+  //     if (snapshot.hasData) {
+  //       return FadeInImage(
+  //         fit: BoxFit.cover,
+  //         placeholder: AssetImage('images/placeholder.png'),
+  //         image: CacheImage('${snapshot.data}'),
+  //       );
+  //     }
+
+  //     if (!snapshot.hasData) {
+  //       return FadeInImage(
+  //         fit: BoxFit.cover,
+  //         placeholder: AssetImage('images/placeholder.png'),
+  //         image: AssetImage('images/notfound.jpg'),
+  //       );
+  //     }
+  //   },
+  // );
 }

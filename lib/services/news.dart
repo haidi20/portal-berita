@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-const url = 'https://youlead.id/wp-json/wp/v2/posts/?per_page=10';
+const url = 'https://youlead.id/wp-json/barav/v1/posts?paged=1';
 
 class News {
   Future fetchData() async {

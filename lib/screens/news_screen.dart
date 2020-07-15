@@ -36,6 +36,8 @@ class _ContentPageState extends State<ContentPage> {
     news.fetchData().then((res) async {
       _dataController.add(res);
 
+      print(res);
+
       return res;
     });
   }
@@ -51,15 +53,7 @@ class _ContentPageState extends State<ContentPage> {
   String getContent(String content) {
     RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
 
-    return content.replaceAll(exp, '');
-  }
-
-  String getUrl(int featured_media) {
-    if (featured_media != 0) {
-      return 'https://youlead.id/wp-json/wp/v2/media/$featured_media';
-    } else {
-      return null;
-    }
+    return content.replaceAll(exp, '').replaceAll('&nbsp;', '');
   }
 
   @override
@@ -98,14 +92,15 @@ class _ContentPageState extends State<ContentPage> {
                         scrollDirection: Axis.vertical,
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, i) {
-                          // for (var item in snapshot.data)
                           return ListTile(
                             title: PostScreen(
-                              url: getUrl(snapshot.data[i]['featured_media']),
-                              time: getTime('${snapshot.data[i]['date_gmt']}'),
-                              title: '${snapshot.data[i]["title"]["rendered"]}',
-                              content: getContent(
-                                  '${snapshot.data[i]["excerpt"]["rendered"]}'),
+                              url:
+                                  '${snapshot.data[i]["featured_image"]["large"]}',
+                              // time:
+                              //     getTime('${snapshot.data[i]['date_gmt']}'),
+                              title: '${snapshot.data[i]["title"]}',
+                              content:
+                                  getContent('${snapshot.data[i]["content"]}'),
                             ),
                           );
                         },
@@ -119,7 +114,7 @@ class _ContentPageState extends State<ContentPage> {
                           for (var i = 0; i < 10; i++)
                             PostScreen(
                               url: '',
-                              time: '',
+                              // time: '',
                               title: '',
                               content: '',
                             ),
