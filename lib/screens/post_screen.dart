@@ -22,7 +22,7 @@ class PostScreen extends StatelessWidget {
             flex: 3,
             child: Center(
               child: Container(
-                margin: EdgeInsets.all(16),
+                margin: EdgeInsets.all(14),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(7),
                   child: _showImage(url),
@@ -65,46 +65,20 @@ class PostScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-@override
-Widget _showImage(url) {
-  if (url == 'false') {
-    return FadeInImage(
-      fit: BoxFit.cover,
-      placeholder: AssetImage('images/placeholder.png'),
-      image: AssetImage('images/notfound.jpg'),
-    );
-  } else {
-    return FadeInImage(
-      fit: BoxFit.cover,
-      placeholder: AssetImage('images/placeholder.png'),
-      image: CacheImage('$url'),
-    );
+  _showImage(url) {
+    if (url == false) {
+      return FadeInImage(
+        fit: BoxFit.cover,
+        placeholder: AssetImage('images/placeholder.png'),
+        image: AssetImage('images/notfound.jpg'),
+      );
+    } else {
+      return FadeInImage(
+        // fit: BoxFit.cover,
+        placeholder: AssetImage('images/placeholder.png'),
+        image: CacheImage('$url'),
+      );
+    }
   }
-
-  // return StreamBuilder(
-  //   stream: _dataController.stream,
-  //   builder: (BuildContext context, AsyncSnapshot snapshot) {
-  //     if (snapshot.hasError) {
-  //       return Text(snapshot.error);
-  //     }
-
-  //     if (snapshot.hasData) {
-  //       return FadeInImage(
-  //         fit: BoxFit.cover,
-  //         placeholder: AssetImage('images/placeholder.png'),
-  //         image: CacheImage('${snapshot.data}'),
-  //       );
-  //     }
-
-  //     if (!snapshot.hasData) {
-  //       return FadeInImage(
-  //         fit: BoxFit.cover,
-  //         placeholder: AssetImage('images/placeholder.png'),
-  //         image: AssetImage('images/notfound.jpg'),
-  //       );
-  //     }
-  //   },
-  // );
 }
