@@ -1,5 +1,6 @@
 import 'dart:core';
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:HolidayPackage/services/news.dart';
 import 'package:HolidayPackage/screens/post_screen.dart';
@@ -30,16 +31,26 @@ class ContentPage extends StatefulWidget {
 
 class _ContentPageState extends State<ContentPage> {
   News news = News();
-  StreamController _dataController;
+  StreamController _dataController = new StreamController.broadcast();
+  ScrollController _scrollController = new ScrollController();
 
-  getData() async {
+  var random = new Random();
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
+
+  void getData() async {
     news.fetchData().then((res) async {
       _dataController.add(res);
-
-      print(res);
-
-      return res;
     });
+  }
+
+  void handleShowMoreContent() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      print('end scrolling');
+      news.moreData().then((res) async {
+        _dataController.add(res);
+      });
+    }
   }
 
   String getTime(String dataTime) {
@@ -56,11 +67,24 @@ class _ContentPageState extends State<ContentPage> {
     return content.replaceAll(exp, '').replaceAll('&nbsp;', '');
   }
 
+  Future refreshList() async {
+    refreshKey.currentState?.show(atTop: false);
+    await Future.delayed(Duration(seconds: 2));
+
+    getData();
+
+    return null;
+  }
+
   @override
   void initState() {
-    _dataController = new StreamController();
-    getData();
     super.initState();
+
+    _dataController = new StreamController();
+    _scrollController.addListener(() {
+      handleShowMoreContent();
+    });
+    getData();
   }
 
   @override
@@ -82,28 +106,36 @@ class _ContentPageState extends State<ContentPage> {
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     // print('Has error: ${snapshot.hasError}');
                     // print('Has data: ${snapshot.hasData}');
+                    List data = [];
 
                     if (snapshot.hasError) {
                       return Text(snapshot.error);
                     }
 
                     if (snapshot.hasData) {
-                      return ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context, i) {
-                          return ListTile(
-                            title: PostScreen(
-                              url:
-                                  '${snapshot.data[i]["featured_image"]["large"]}',
-                              // time:
-                              //     getTime('${snapshot.data[i]['date_gmt']}'),
-                              title: '${snapshot.data[i]["title"]}',
-                              content:
-                                  getContent('${snapshot.data[i]["content"]}'),
-                            ),
-                          );
-                        },
+                      for (var item in snapshot.data) {
+                        data.add(item);
+                      }
+
+                      return RefreshIndicator(
+                        key: refreshKey,
+                        onRefresh: refreshList,
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: snapshot.data.length,
+                          controller: _scrollController,
+                          itemBuilder: (context, i) {
+                            return ListTile(
+                              title: PostScreen(
+                                url: '${data[i]["featured_image"]["large"]}',
+                                // time:
+                                //     getTime('${data[i]['date_gmt']}'),
+                                title: '${data[i]["title"]}',
+                                content: getContent('${data[i]["content"]}'),
+                              ),
+                            );
+                          },
+                        ),
                       );
                     }
 

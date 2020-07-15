@@ -1,7 +1,9 @@
-import 'package:http/http.dart' as http;
+import 'dart:core';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 const url = 'https://youlead.id/wp-json/barav/v1/posts?paged=1';
+const url2 = 'https://youlead.id/wp-json/barav/v1/posts?paged=2';
 
 class News {
   Future fetchData() async {
@@ -15,19 +17,14 @@ class News {
     }
   }
 
-  Future fetchImage(url) async {
-    if (url != null) {
-      http.Response response = await http.get(url);
+  Future moreData() async {
+    http.Response response = await http.get(url2);
 
-      if (response.statusCode == 200) {
-        String dataDecode = response.body;
-
-        return jsonDecode(dataDecode)['guid']['rendered'];
-      } else {
-        print(response.statusCode);
-      }
+    if (response.statusCode == 200) {
+      String data = response.body;
+      return jsonDecode(data);
     } else {
-      return null;
+      print(response.statusCode);
     }
   }
 }

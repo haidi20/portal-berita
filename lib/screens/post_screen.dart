@@ -7,15 +7,9 @@ class PostScreen extends StatelessWidget {
     // @required this.time,
     @required this.title,
     @required this.content,
-  }) {
-    getImage();
-  }
+  });
 
   final String title, content, url;
-
-  void getImage() {
-    print(url);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,14 +70,12 @@ class PostScreen extends StatelessWidget {
 @override
 Widget _showImage(url) {
   if (url == 'false') {
-    print(url);
     return FadeInImage(
       fit: BoxFit.cover,
       placeholder: AssetImage('images/placeholder.png'),
       image: AssetImage('images/notfound.jpg'),
     );
   } else {
-    print(url);
     return FadeInImage(
       fit: BoxFit.cover,
       placeholder: AssetImage('images/placeholder.png'),
