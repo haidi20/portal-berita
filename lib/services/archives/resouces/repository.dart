@@ -6,5 +6,5 @@ import 'package:HolidayPackage/services/resouces/postApiProvider.dart';
 class Repository {
   final postApiProvider = PostApiProvider();
 
-  Future<List<Post>> fetcPost() => postApiProvider.fetchPost();
+  Future<List<Post>> fetchPost(url) => postApiProvider.fetchPost(url);
 }

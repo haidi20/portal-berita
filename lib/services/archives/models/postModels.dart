@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final post = postFromJson(jsonString);
-
 import 'dart:core';
 import 'dart:convert';
 
@@ -53,6 +49,8 @@ class Post {
       image: json["featured_image"]["large"],
     );
   }
+
+  // factory Playing.fromRawJson(String str) => Playing.fromJson(json.decode(str));
 
   Map<String, dynamic> toJson() => {
         "date": date,

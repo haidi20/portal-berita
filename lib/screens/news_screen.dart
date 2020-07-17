@@ -1,10 +1,11 @@
 import 'dart:core';
-import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:HolidayPackage/services/data/api.dart';
+import 'package:HolidayPackage/services/model/Post.dart';
 import 'package:HolidayPackage/screens/post_screen.dart';
 import 'package:HolidayPackage/screens/header_screen.dart';
-import 'package:HolidayPackage/services/blocs/postBloc.dart';
-import 'package:HolidayPackage/services/models/postModels.dart';
+
+// import 'package:HolidayPackage/services/blocs/counterBloc.dart';
 
 class NewsScreen extends StatelessWidget {
   // This widget is the root of your application.
@@ -30,28 +31,13 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPageState extends State<ContentPage> {
-  var random = new Random();
-  var refreshKey = GlobalKey<RefreshIndicatorState>();
-  ScrollController _scrollController = new ScrollController();
-
-  String getTime(String dataTime) {
-    DateTime date = DateTime.parse(dataTime);
-    int differentDays = DateTime.now().difference(date).inDays;
-    var differentNight = differentDays >= 2 ? differentDays - 1 : 0;
-
-    return "$differentDays Days - $differentNight Nights";
-  }
+  // CounterBloc _counterBloc = CounterBloc(0);
+  PostRepository postRepository;
 
   @override
   void initState() {
-    bloc.fetchAllPost();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    bloc.dispose();
-    super.dispose();
+    postRepository = PostRepository();
   }
 
   @override
@@ -68,17 +54,24 @@ class _ContentPageState extends State<ContentPage> {
               flex: 8,
               child: Container(
                 // color: Colors.grey,
-                child: StreamBuilder(
-                  stream: bloc.allPost,
-                  builder: (context, AsyncSnapshot<List<Post>> snapshot) {
-                    if (snapshot.hasData) {
-                      return _showing(snapshot);
-                    } else if (snapshot.hasError) {
-                      return Text(snapshot.error.toString());
+                child: FutureBuilder(
+                  future: postRepository.fetchData(5),
+                  builder: (BuildContext c, AsyncSnapshot<List<Post>> s) {
+                    if (s.hasError) {
+                      return Center(
+                        child: Text("salah ${s.error.toString()}"),
+                      );
+                    } else if (s.connectionState == ConnectionState.done) {
+                      List<Post> profiles = s.data;
+                      print(profiles);
+                      return Center(
+                        child: Text("ada data"),
+                      );
+                    } else {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
                     }
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
                   },
                 ),
               ),
@@ -86,24 +79,6 @@ class _ContentPageState extends State<ContentPage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _showing(snapshot) {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      itemCount: snapshot.data.length,
-      itemBuilder: (context, int index) {
-        return ListTile(
-          title: PostScreen(
-            url: '${snapshot.data[index].image}',
-            // time:
-            //     getTime('${snapshot.data[index]['date_gmt']}'),
-            title: '${snapshot.data[index].title}',
-            content: snapshot.data[index].content,
-          ),
-        );
-      },
     );
   }
 }
