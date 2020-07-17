@@ -4,12 +4,13 @@ import 'package:cache_image/cache_image.dart';
 class PostScreen extends StatelessWidget {
   PostScreen({
     @required this.url,
-    // @required this.time,
+    @required this.time,
     @required this.title,
     @required this.content,
   });
 
-  final String title, content, url;
+  var url;
+  final String title, content, time;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class PostScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "time",
+                    time,
                     style: TextStyle(
                       color: Colors.blue,
                     ),
