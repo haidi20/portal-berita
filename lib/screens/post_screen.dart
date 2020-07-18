@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cache_image/cache_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class PostScreen extends StatelessWidget {
   PostScreen({
@@ -14,6 +14,9 @@ class PostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
     return Container(
       // height: 80,
       color: Color(0xFFF6F9FD),
@@ -23,10 +26,13 @@ class PostScreen extends StatelessWidget {
             flex: 3,
             child: Center(
               child: Container(
-                margin: EdgeInsets.all(14),
+                width: width * 0.20,
+                height: height * 0.10,
+                // margin: EdgeInsets.all(14),
+                color: Colors.blue,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(7),
-                  child: _showImage(url),
+                  child: _showImage(url, context),
                 ),
               ),
             ),
@@ -67,19 +73,21 @@ class PostScreen extends StatelessWidget {
     );
   }
 
-  _showImage(url) {
-    if (url == false) {
-      return FadeInImage(
-        fit: BoxFit.cover,
-        placeholder: AssetImage('images/placeholder.png'),
-        image: AssetImage('images/notfound.jpg'),
-      );
-    } else {
-      return FadeInImage(
-        // fit: BoxFit.cover,
-        placeholder: AssetImage('images/placeholder.png'),
-        image: CacheImage('$url'),
-      );
-    }
+  _showImage(url, context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
+    return CachedNetworkImage(
+      imageUrl: '$url',
+      fit: BoxFit.cover,
+      placeholder: (BuildContext context, String url) => Container(
+        width: width * 0.30,
+        height: height * 0.20,
+        child: Image(
+          fit: BoxFit.cover,
+          image: AssetImage('images/notfound.jpg'),
+        ),
+      ),
+    );
   }
 }

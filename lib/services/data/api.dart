@@ -7,7 +7,7 @@ class PostRepository {
   Client client = Client();
 
   Future<List<Post>> fetchData(int perpage) async {
-    var url = 'https://youlead.id/wp-json/barav/v1/posts?page=$perpage';
+    var url = 'https://youlead.id/wp-json/barav/v1/posts?paged=$perpage';
 
     final response = await client.get(url);
     if (response.statusCode == 200) {
