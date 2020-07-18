@@ -19,6 +19,8 @@ class PostScreen extends StatelessWidget {
 
     return Container(
       // height: 80,
+      // width: double.infinity,
+      margin: EdgeInsets.only(bottom: 10.0, right: 10.0),
       color: Color(0xFFF6F9FD),
       child: Row(
         children: <Widget>[
@@ -29,7 +31,6 @@ class PostScreen extends StatelessWidget {
                 width: width * 0.20,
                 height: height * 0.10,
                 // margin: EdgeInsets.all(14),
-                color: Colors.blue,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(7),
                   child: _showImage(url, context),
@@ -46,17 +47,16 @@ class PostScreen extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     "$title",
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  Text(
-                    time,
-                    style: TextStyle(
-                      color: Colors.blue,
-                    ),
-                  ),
+                  Text(time,
+                      style: TextStyle(
+                        color: Colors.blue,
+                      )),
                   Text(
                     "$content",
                     overflow: TextOverflow.ellipsis,

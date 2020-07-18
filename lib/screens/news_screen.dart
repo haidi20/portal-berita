@@ -136,13 +136,11 @@ class _ShowListPostState extends State<ShowListPost> {
         controller: scrollController,
         scrollDirection: Axis.vertical,
         itemBuilder: (BuildContext c, int i) {
-          return ListTile(
-            title: PostScreen(
-              url: post[i].image,
-              time: post[i].date,
-              title: post[i].title,
-              content: post[i].content,
-            ),
+          return PostScreen(
+            url: post[i].image,
+            time: post[i].date,
+            title: post[i].title,
+            content: post[i].content,
           );
         },
       ),
