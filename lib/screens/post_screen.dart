@@ -41,24 +41,30 @@ class PostScreen extends StatelessWidget {
           Expanded(
             flex: 7,
             child: Container(
-              margin: EdgeInsets.only(top: 10),
+              // color: Colors.red,
+              padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "$title",
+                    title,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w900,
                     ),
                   ),
-                  Text(time,
-                      style: TextStyle(
-                        color: Colors.blue,
-                      )),
                   Text(
-                    "$content",
+                    time,
+                    style: TextStyle(
+                      color: Colors.blue,
+                    ),
+                  ),
+                  SizedBox(
+                    height: height * 0.02,
+                  ),
+                  Text(
+                    content,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: Color(0xFF94979B),

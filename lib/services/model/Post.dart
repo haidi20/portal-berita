@@ -8,7 +8,7 @@ class Post {
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
         title: json['title'],
-        date: _setTime(json['date']),
+        date: _setTime(json['date'], json['category'], json['author']),
         image: json['featured_image']['large'],
         content: _filterContent(json['content']),
       );
@@ -37,16 +37,36 @@ String postToJson(Post data) {
   return json.encode(jsonData);
 }
 
-String _setTime(String dataTime) {
+String _setTime(String dataTime, category, author) {
   DateTime date = DateTime.parse(dataTime);
-  int differentDays = DateTime.now().difference(date).inDays;
-  var differentNight = differentDays >= 2 ? differentDays - 1 : 0;
 
-  return "$differentDays Days - $differentNight Nights";
+  return "${date.day} ${nameMonts[date.month]} ${date.year}, $category, $author";
 }
 
 String _filterContent(String content) {
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+  // replaceAll(new RegExp(r"\s+"), "")
 
-  return content.replaceAll(exp, '').replaceAll('&nbsp;', '');
+  return content
+          .replaceAll(exp, '')
+          .replaceAll('&nbsp;', '')
+          .replaceAll("/n", "")
+          .trim()
+          .substring(0, 23) +
+      "...";
 }
+
+List nameMonts = [
+  "Januari",
+  "Februari",
+  "Maret",
+  "April",
+  "Mei",
+  "Juni",
+  "Juli",
+  "Agustus",
+  "September",
+  "Oktober",
+  "November",
+  "Desember",
+];
