@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 class Post {
+  int id;
   var image;
   String title, date, content;
 
-  Post({this.title, this.date, this.content, this.image});
+  Post({this.id, this.title, this.date, this.content, this.image});
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
+        id: json['id'],
         title: json['title'],
         date: _setTime(json['date'], json['category'], json['author']),
         image: json['featured_image']['large'],
@@ -14,6 +16,7 @@ class Post {
       );
 
   Map<String, dynamic> toJson() => {
+        "id": id,
         "date": date,
         "title": title,
         "image": image,
@@ -22,7 +25,7 @@ class Post {
 
   @override
   String toString() =>
-      'Post{title: $title, date: $date, image: $image, content: $content}';
+      'Post{id: $id, title: $title, date: $date, image: $image, content: $content}';
 }
 
 List<Post> postFromJson(String jsonData) {

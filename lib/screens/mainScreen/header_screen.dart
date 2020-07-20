@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class HeaderScreen extends StatelessWidget {
-  final Function(String) search;
+  final Function(String) handleSearch;
 
-  HeaderScreen({this.search});
+  HeaderScreen({this.handleSearch});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class HeaderScreen extends StatelessWidget {
                 prefixIcon: Icon(Icons.search),
                 border: InputBorder.none,
               ),
-              onChanged: (e) => this.search(e),
+              onChanged: (e) => this.handleSearch(e),
             ),
           ),
         ],

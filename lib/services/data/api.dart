@@ -1,19 +1,29 @@
 import 'dart:core';
 import 'dart:async';
-import 'package:http/http.dart' show Client;
+import 'package:dio/dio.dart';
+import 'package:retrofit/http.dart';
 import 'package:HolidayPackage/services/model/Post.dart';
 
-class PostRepository {
-  Client client = Client();
+part 'api.g.dart';
 
-  Future<List<Post>> fetchData(int perpage) async {
-    var url = 'https://youlead.id/wp-json/barav/v1/posts?paged=$perpage';
+@RestApi(baseUrl: "https://youlead.id/wp-json/barav/v1")
+abstract class RestClient {
+  factory RestClient(Dio dio, {String baseUrl}) = _RestClient;
 
-    final response = await client.get(url);
-    if (response.statusCode == 200) {
-      return postFromJson(response.body);
-    } else {
-      throw Exception('Faild to load');
-    }
-  }
+  @GET("/posts")
+  Future<List<Post>> getPostList(
+    @Query("paged") int paged,
+    @Query("s") String s,
+  );
+}
+
+RestClient restClient({String header}) {
+  final dio = Dio();
+  dio.options.headers["Content-type"] =
+      header == null || header.isEmpty ? "application/json" : header;
+
+  dio.options.connectTimeout = 65000;
+  RestClient client = RestClient(dio);
+
+  return client;
 }
