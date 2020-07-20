@@ -42,6 +42,10 @@ class _ContentPageState extends State<ContentPage> {
 
   @override
   Widget build(BuildContext context) {
+    void search(e) {
+      print(e);
+    }
+
     return Scaffold(
       // agar ketika qwerty muncul.. page content tidak naik ke atas
       resizeToAvoidBottomInset: false,
@@ -49,7 +53,7 @@ class _ContentPageState extends State<ContentPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            HeaderScreen(),
+            HeaderScreen(search: search),
             Expanded(
               flex: 8,
               child: Container(
