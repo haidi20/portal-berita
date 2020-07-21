@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class DetailPost extends StatelessWidget {
-  DetailPost({this.id});
+  DetailPost({this.id, this.title, this.content, this.image});
 
   final int id;
+  final String title, content, image;
+  ScrollController scrollController = new ScrollController();
+
+  bool onNotification(ScrollNotification notification) {
+    if (notification is ScrollUpdateNotification) {
+      if (scrollController.position.maxScrollExtent > scrollController.offset &&
+          scrollController.position.maxScrollExtent - scrollController.offset <=
+              50) {}
+    }
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,23 +26,43 @@ class DetailPost extends StatelessWidget {
           slivers: <Widget>[
             SliverAppBar(
               pinned: true,
-              expandedHeight: 200.0,
-              title: Text("Sample Slivers"),
+              expandedHeight: 300.0,
+              title: Text(""),
               flexibleSpace: FlexibleSpaceBar(
-                background: Image.network(
-                  "https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                  fit: BoxFit.cover,
-                ),
+                background: _getImage(),
               ),
             ),
             SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (_, index) => ListTile(
-                  title: Text("Index: $index"),
-                ),
+              delegate: SliverChildListDelegate(
+                [
+                  Expanded(
+                    flex: 2,
+                    child: Text(title),
+                  ),
+                  Expanded(
+                    child: Html(
+                      data: """$content""",
+                    ),
+                  ),
+                ],
               ),
-            )
+            ),
           ],
+        ),
+      ),
+    );
+  }
+
+  _getImage() {
+    return CachedNetworkImage(
+      imageUrl: image,
+      fit: BoxFit.cover,
+      placeholder: (BuildContext context, String url) => Container(
+        // width: width * 0.30,
+        // height: height * 0.20,
+        child: Image(
+          fit: BoxFit.cover,
+          image: AssetImage('images/notfound.jpg'),
         ),
       ),
     );

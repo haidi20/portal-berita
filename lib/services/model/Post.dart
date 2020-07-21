@@ -3,16 +3,24 @@ import 'dart:convert';
 class Post {
   int id;
   var image;
-  String title, date, content;
+  String title, date, content, shortContent;
 
-  Post({this.id, this.title, this.date, this.content, this.image});
+  Post({
+    this.id,
+    this.date,
+    this.title,
+    this.image,
+    this.content,
+    this.shortContent,
+  });
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
         id: json['id'],
         title: json['title'],
-        date: _setTime(json['date'], json['category'], json['author']),
         image: json['featured_image']['large'],
         content: _filterContent(json['content']),
+        shortContent: _filterShortContent(json['content']),
+        date: _setTime(json['date'], json['category'], json['author']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -21,11 +29,13 @@ class Post {
         "title": title,
         "image": image,
         "content": content,
+        "shortContent": shortContent,
       };
 
   @override
   String toString() =>
-      'Post{id: $id, title: $title, date: $date, image: $image, content: $content}';
+      'Post{id: $id, title: $title, date: $date,' +
+      'image: $image, content: $content shortContent: $shortContent}';
 }
 
 List<Post> postFromJson(String jsonData) {
@@ -46,7 +56,7 @@ String _setTime(String dataTime, category, author) {
   return "${date.day} ${nameMonts[date.month]} ${date.year}, $category, $author";
 }
 
-String _filterContent(String content) {
+String _filterShortContent(String content) {
   RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
   // replaceAll(new RegExp(r"\s+"), "")
 
@@ -57,6 +67,14 @@ String _filterContent(String content) {
           .trim()
           .substring(0, 23) +
       "...";
+}
+
+String _filterContent(String content) {
+  RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+  // replaceAll(new RegExp(r"\s+"), "")
+
+  // return content.replaceAll(exp, '').replaceAll('&nbsp;', '').trim();
+  return content;
 }
 
 List nameMonts = [

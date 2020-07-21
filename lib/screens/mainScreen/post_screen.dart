@@ -3,13 +3,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class PostScreen extends StatelessWidget {
   PostScreen({
-    @required this.url,
     @required this.time,
+    @required this.image,
     @required this.title,
     @required this.content,
   });
 
-  var url;
+  var image;
   final String title, content, time;
 
   @override
@@ -33,7 +33,7 @@ class PostScreen extends StatelessWidget {
                 // margin: EdgeInsets.all(14),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(7),
-                  child: _showImage(url, context),
+                  child: _showImage(image, context),
                 ),
               ),
             ),
@@ -79,12 +79,12 @@ class PostScreen extends StatelessWidget {
     );
   }
 
-  _showImage(url, context) {
+  _showImage(image, context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
     return CachedNetworkImage(
-      imageUrl: '$url',
+      imageUrl: image,
       fit: BoxFit.cover,
       placeholder: (BuildContext context, String url) => Container(
         width: width * 0.30,

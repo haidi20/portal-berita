@@ -25,7 +25,7 @@ class _ShowListPostState extends State<ShowListPost> {
   final client = restClient();
   ScrollController scrollController = new ScrollController();
 
-  bool onNotificati(ScrollNotification notification) {
+  bool onNotification(ScrollNotification notification) {
     if (notification is ScrollUpdateNotification) {
       if (scrollController.position.maxScrollExtent > scrollController.offset &&
           scrollController.position.maxScrollExtent - scrollController.offset <=
@@ -43,13 +43,16 @@ class _ShowListPostState extends State<ShowListPost> {
     return true;
   }
 
-  void gotoDetailPost(id) {
+  void gotoDetailPost(data) {
     // print(id);
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => DetailPost(
-          id: id,
+          id: data.id,
+          title: data.title,
+          image: data.image,
+          content: data.content,
         ),
       ),
     );
@@ -70,19 +73,19 @@ class _ShowListPostState extends State<ShowListPost> {
   @override
   Widget build(BuildContext context) {
     return NotificationListener(
-      onNotification: onNotificati,
+      onNotification: onNotification,
       child: ListView.builder(
         itemCount: post.length,
         controller: scrollController,
         scrollDirection: Axis.vertical,
         itemBuilder: (BuildContext c, int i) {
           return FlatButton(
-            onPressed: () => gotoDetailPost(post[i].id),
+            onPressed: () => gotoDetailPost(post[i]),
             child: PostScreen(
-              url: post[i].image,
               time: post[i].date,
+              image: post[i].image,
               title: post[i].title,
-              content: post[i].content,
+              content: post[i].shortContent,
             ),
           );
         },
