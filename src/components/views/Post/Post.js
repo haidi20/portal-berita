@@ -32,19 +32,10 @@ const styled = {
 
 const Post = props => {
     const classes = useStyles();
-    const {data} = useApi();
-
-    console.log(data);
-
-    const fetchImage = item => {
-        let image = item.featured_image.large;
-
-        if(image != ''){
-            return image;
-        }else{
-            return `${process.env.PUBLIC_URL}/notfound.jpg`;
-        }
-    }
+    const {
+        data, fetchContent, fetchImage, 
+        fetchTime, fetchTitle,
+    } = useApi();
 
     return (
         <Grid container spacing={1}>
@@ -59,13 +50,17 @@ const Post = props => {
                 <div style={styled.content}>
                     {data && 
                         data.map((item, index) => {
-                            let image = fetchImage(item);
+                            let time    = fetchTime(item);
+                            let title   = fetchTitle(item);
+                            let image   = fetchImage(item);
+                            let content = fetchContent(item);
 
                             return <Card
                                 key={index} 
+                                time={time}
                                 image={image}
-                                title={item.title} 
-                                content={item.content}
+                                title={title} 
+                                content={content}
                             />    
                         })
                     }

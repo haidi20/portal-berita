@@ -5,6 +5,8 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 
+import { Markup } from 'interweave';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -43,10 +45,12 @@ export default function ComplexGrid(props) {
             <Grid item xs container direction="column" spacing={2}>
               <Grid item xs>
                 <Typography gutterBottom variant="subtitle1">
-                  {props.title}
+                  {props.title} <br />
+                  {props.time}
                 </Typography>
                 <Typography variant="body2" gutterBottom>
-                  {props.content}
+                    {/* <Markup content={props.content} /> */}
+                    {props.content}
                 </Typography>
               </Grid>
             </Grid>
