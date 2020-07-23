@@ -6,6 +6,8 @@ import 'moment/locale/id';
 
 const useApi = () => {
     let [data, setData] = useState([]);
+    let [paged, setPaged] = useState(1);
+    let [loading, setLoading] = useState(false);
     moment.locale('id');
 
     useEffect(() => {
@@ -13,9 +15,11 @@ const useApi = () => {
     }, []);
 
     const fetchData = async props =>{
-        await axios('https://youlead.id/wp-json/barav/v1/search')
+        setLoading(true);
+        await axios(`https://youlead.id/wp-json/barav/v1/search?paged=${paged}`)
         .then(item => {
             setData(item.data);
+            setLoading(false);
         });
     }
 
@@ -31,16 +35,25 @@ const useApi = () => {
 
     const fetchTitle = item => {
         let title = item.title.substr(0, 50);
+        let titleMobile = item.title.substr(0, 20);
 
-        return title + '...';
+        return {
+            web: title + '...',
+            mobile: titleMobile + '...',
+        }
     }
 
     const fetchContent = item => {
-        let content = item.content.substr(0, 100);
-        const regex = /(<([^>]+)>)/ig;
-        const result = content.replace(regex, '').replace(/\&nbsp;/g, '');
+        let contentWeb      = item.content.substr(0, 100);
+        let contentMobile   = item.content.substr(0, 30);
 
-        return result + '...';
+        let resultWeb = strip(contentWeb);
+        let resultMobile = strip(contentMobile);         
+
+        return {
+            web: resultWeb + '...',
+            mobile: resultMobile +'...',
+        }
     }
 
     const fetchTime = item => {
@@ -48,8 +61,14 @@ const useApi = () => {
         return time;
     }
 
+    const strip = (html) => {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        return doc.body.textContent || "";
+     }
+
     return {
         data: data,
+        loading : loading,
         fetchData: fetchData,
         fetchTime: fetchTime,
         fetchTitle: fetchTitle,
