@@ -5,8 +5,10 @@ import moment from 'moment';
 import 'moment/locale/id'; 
 
 const useApi = () => {
+    let typingTimer = null;
     let [data, setData] = useState([]);
     let [paged, setPaged] = useState(1);
+    let [search, setSearch] = useState('');
     let [loading, setLoading] = useState(false);
     let [loadingMore, setLoadingMore] = useState(false);
     moment.locale('id');
@@ -14,6 +16,10 @@ const useApi = () => {
     useEffect(() => {
         fetchData();
     }, []);
+
+    useEffect(() => {
+        fetchSearchData();
+    }, [search]);
 
     useEffect(() => {
         let sizedMobile = 0;
@@ -26,10 +32,9 @@ const useApi = () => {
         };
     }, [data]);
 
-
-    const fetchData = async props =>{
+    const fetchData = async props => {
         setLoading(true);
-        await axios(`https://youlead.id/wp-json/barav/v1/posts?paged=1`)
+        await axios(`https://youlead.id/wp-json/barav/v1/search?paged=1&s=${search}`)
         .then(item => {
             setData([...data, ...item.data]);
             setLoading(false);
@@ -37,12 +42,32 @@ const useApi = () => {
     }
 
     const fetchMoreData = async props => {
-        await axios(`https://youlead.id/wp-json/barav/v1/search?paged=${paged + 1}`)
+        await axios(`https://youlead.id/wp-json/barav/v1/search?paged=${paged + 1}&s=${search}`)
         .then(item => {
-            setData([...data, ...item.data]);
-            setLoading(false);
-            setPaged(paged + 1);
+            if(item.data.length > 0){
+                setData([...data, ...item.data]);
+                setLoading(false);
+                setPaged(paged + 1);
+            }
         });
+    }
+
+    const fetchSearchData = async props => {
+        setLoading(true);
+        await axios(`https://youlead.id/wp-json/barav/v1/search?paged=1&s=${search}`)
+        .then(item => {
+            setData(item.data);
+            setLoading(false);
+        });
+    }
+
+    const searchPost = e => {
+        let search = e.target.value;
+
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            setSearch(search);
+        }, 800);
     }
 
     const fetchImage = item => {
@@ -55,7 +80,7 @@ const useApi = () => {
         }
     }
 
-    const fetchTitle = item => {
+    const limitTitle = item => {
         let title = item.title.substr(0, 50);
         let titleMobile = item.title.substr(0, 20);
 
@@ -65,9 +90,9 @@ const useApi = () => {
         }
     }
 
-    const fetchContent = item => {
+    const limitContent = item => {
         let contentWeb      = item.content.substr(0, 100);
-        let contentMobile   = item.content.substr(0, 30);
+        let contentMobile   = item.content.substr(0, 29);
 
         let resultWeb = strip(contentWeb);
         let resultMobile = strip(contentMobile);         
@@ -114,9 +139,10 @@ const useApi = () => {
         loading : loading,
         fetchData: fetchData,
         fetchTime: fetchTime,
-        fetchTitle: fetchTitle,
+        searchPost: searchPost,
+        limitTitle: limitTitle,
         fetchImage: fetchImage,
-        fetchContent: fetchContent,
+        limitContent: limitContent,
         fetchMoreData: fetchMoreData,
     }
 }

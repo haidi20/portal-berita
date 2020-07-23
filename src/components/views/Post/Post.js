@@ -61,8 +61,8 @@ const Post = props => {
     const classes = useStyles();
     const {
         data, loading, 
-        fetchContent, fetchImage, 
-        fetchTime, fetchTitle,
+        fetchTime, limitTitle,
+        limitContent, fetchImage, searchPost,
     } = useApi();
 
     return (
@@ -89,7 +89,7 @@ const Post = props => {
                                         fullWidth={true}
                                         label="Search" 
                                         id="input-with-icon-grid" 
-                                        onKeyUp={e => console.log(e.target.value)}
+                                        onKeyUp={searchPost}
                                     />
                                 </Grid>
                             </Grid>
@@ -100,9 +100,9 @@ const Post = props => {
                                     { data.length > 0
                                     && data.map((item, index) => {
                                         let time    = fetchTime(item);
-                                        let title   = fetchTitle(item);
+                                        let title   = limitTitle(item);
                                         let image   = fetchImage(item);
-                                        let content = fetchContent(item);
+                                        let content = limitContent(item);
 
                                         return <Card
                                             key={index} 
