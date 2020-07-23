@@ -8,18 +8,38 @@ const useApi = () => {
     let [data, setData] = useState([]);
     let [paged, setPaged] = useState(1);
     let [loading, setLoading] = useState(false);
+    let [loadingMore, setLoadingMore] = useState(false);
     moment.locale('id');
 
     useEffect(() => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        window.onscroll = function(ev) {
+            if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+                setLoading(true);
+                fetchMoreData();
+            }
+        };
+    }, [data]);
+
+
     const fetchData = async props =>{
         setLoading(true);
-        await axios(`https://youlead.id/wp-json/barav/v1/search?paged=${paged}`)
+        await axios(`https://youlead.id/wp-json/barav/v1/posts?paged=1`)
         .then(item => {
-            setData(item.data);
+            setData([...data, ...item.data]);
             setLoading(false);
+        });
+    }
+
+    const fetchMoreData = async props => {
+        await axios(`https://youlead.id/wp-json/barav/v1/search?paged=${paged + 1}`)
+        .then(item => {
+            setData([...data, ...item.data]);
+            setLoading(false);
+            setPaged(paged + 1);
         });
     }
 
@@ -74,6 +94,7 @@ const useApi = () => {
         fetchTitle: fetchTitle,
         fetchImage: fetchImage,
         fetchContent: fetchContent,
+        fetchMoreData: fetchMoreData,
     }
 }
 

@@ -49,61 +49,58 @@ export default function ComplexGrid(props) {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <Grid container spacing={2}>
-          {/* image mobile */}
-          <Hidden smUp>
-            <Grid item xs={3}>
-              <ButtonBase className={classes.imageMobile}>
-                <img className={classes.imgMobile} alt="complex" src={props.image} />
-              </ButtonBase>
-            </Grid>
-          </Hidden>
-          {/* content mobile */}
-          <Hidden smUp>
-            <Grid item xs={9} sm container>
-              <Grid item xs container direction="column" spacing={2}>
-                <Grid item xs>
-                  <Typography gutterBottom style={{marginBottom: 0}}>
-                    {props.title.mobile}
-                  </Typography>
-                  <div style={styled.time}>
-                      {props.time}
-                    </div>
-                  <Typography variant="body2" gutterBottom style={{marginTop: 9}}>
-                      {props.content.mobile}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Hidden>
-          {/* image web */}
-          <Hidden xsDown>
-            <Grid item>
-              <ButtonBase className={classes.imageWeb}>
-                <img className={classes.imgWeb} alt="complex" src={props.image} />
-              </ButtonBase>
-            </Grid>
-          </Hidden>
-          {/* content web */}
-          <Hidden xsDown>
-            <Grid item xs={9} sm container>
-              <Grid item xs container direction="column" spacing={2}>
-                <Grid item xs>
-                  <Typography gutterBottom variant="subtitle1">
-                    {props.title.web} <br />
-                    {props.time}
-                  </Typography>
-                  <Typography variant="body2" gutterBottom>
-                      {props.content.web}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Hidden>
+    <Grid container spacing={2}>
+      {/* image mobile */}
+      <Hidden smUp>
+        <Grid item xs={3}>
+          <ButtonBase className={classes.imageMobile}>
+            <img className={classes.imgMobile} alt="complex" src={props.image} />
+          </ButtonBase>
         </Grid>
-      </Paper>
-    </div>
+      </Hidden>
+      {/* content mobile */}
+      <Hidden smUp>
+        <Grid item xs={9} sm container>
+          <Grid item xs container direction="column" spacing={2}>
+            <Grid item xs>
+              <Typography gutterBottom style={{marginBottom: 0}}>
+                {props.title.mobile}
+              </Typography>
+              <div style={styled.time}>
+                  {props.time}
+                </div>
+              <Typography variant="body2" gutterBottom style={{marginTop: 9}}>
+                  {props.content.mobile}
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Hidden>
+      {/* image web */}
+      <Hidden xsDown>
+        <Grid item>
+          <ButtonBase className={classes.imageWeb}>
+            <img className={classes.imgWeb} alt="complex" src={props.image} />
+          </ButtonBase>
+        </Grid>
+      </Hidden>
+      {/* content web */}
+      <Hidden xsDown>
+        <Grid item xs={9} sm container>
+          <Grid item xs container direction="column" spacing={2}>
+            <Grid item xs>
+              <Typography gutterBottom variant="subtitle1">
+                {props.title.web} <br />
+                {props.time}
+              </Typography>
+              <Typography variant="body2" gutterBottom>
+                  {props.content.web}
+              </Typography>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Hidden>
+    </Grid>
   );
 }
+

@@ -17,13 +17,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
-    margin: {
-        paddingTop: 20,
+    header: {
+        // paddingTop: 20,
         textAlign: 'center',
     },
     paper: {
         margin: 'auto',
-        maxWidth: 500,
+        maxHeight: '100%',
+        // maxWidth: 500,
         padding: theme.spacing(2),
         backgroundColor: '#FFFFF',
     },
@@ -40,15 +41,16 @@ const styled = {
         textAlign: 'center',
     },
     content: {
-        height: 600,
+        paddingTop: 20,
+        maxHeight: '100%',
     },
     positionLoading: {
         textAlign: 'center',  
+        marginBottom: 500,
     },
     loading: {
         width: 60,
         height: 60,
-        marginTop: 100,
     },
     appBar: {
         backgroundColor: '#2B9EF3',
@@ -63,12 +65,6 @@ const Post = props => {
         fetchTime, fetchTitle,
     } = useApi();
 
-    // useEffect(() => {
-    //     window.onscroll = function(ev) {
-    //         console.log(window.scrollY);
-    //     };
-    // }, []);
-
     return (
         <div>
             <Grid container spacing={1}>
@@ -81,8 +77,8 @@ const Post = props => {
                 </AppBar>
                 <Grid item md={3} xs={12}></Grid>
                 <Grid item md={6} xs={12}>
-                    <Paper>
-                        <div className={classes.margin}>
+                    <Paper className={classes.paper}>
+                        <div className={classes.header}>
                             <Grid container spacing={1} alignItems="flex-end">
                                 <Grid item md={4} xs={2} sm={4}></Grid>
                                 <Grid item>
@@ -99,23 +95,30 @@ const Post = props => {
                             </Grid>
                         </div>
                         <div style={styled.content}>
-                            { loading 
-                                ? <div style={styled.positionLoading} > <CircularProgress style={styled.loading} /> </div>
-                                : data.map((item, index) => {
-                                    let time    = fetchTime(item);
-                                    let title   = fetchTitle(item);
-                                    let image   = fetchImage(item);
-                                    let content = fetchContent(item);
+                            {/* <div className={classes.root}> */}
+                                {/* <Paper className={classes.paper}> */}
+                                    { data.length > 0
+                                    && data.map((item, index) => {
+                                        let time    = fetchTime(item);
+                                        let title   = fetchTitle(item);
+                                        let image   = fetchImage(item);
+                                        let content = fetchContent(item);
 
-                                    return <Card
-                                        key={index} 
-                                        time={time}
-                                        image={image}
-                                        title={title} 
-                                        content={content}
-                                    />    
-                                }) 
-                            }
+                                        return <Card
+                                            key={index} 
+                                            time={time}
+                                            image={image}
+                                            title={title} 
+                                            content={content}
+                                        />    
+                                    })}
+                                    {loading
+                                        && <div style={styled.positionLoading} > 
+                                                <CircularProgress style={styled.loading} /> 
+                                            </div>
+                                    }
+                                {/* </Paper> */}
+                            {/* </div> */}
                         </div>
                     </Paper>
                 </Grid>
